@@ -6,6 +6,7 @@ from selenium.webdriver.support.wait import WebDriverWait
 from selenium.webdriver.support import expected_conditions
 from locators import RegistrationPageLocators
 from locators import LoginPageLocators
+from urls import Urls
 
 faker = Faker()
 fake = Faker('ru_RU')
@@ -37,7 +38,7 @@ def authorization_user(generate_name, generate_email, generate_password):
     user['password'] = generate_password
 
     driver = webdriver.Chrome()
-    driver.get("https://stellarburgers.nomoreparties.site/register")
+    driver.get(Urls.REGISTER_PAGE)
 
     driver.find_element(*RegistrationPageLocators.NAME_FIELD).send_keys(user['name'])
     driver.find_element(*RegistrationPageLocators.EMAIL_FIELD).send_keys(user['email'])
@@ -47,3 +48,9 @@ def authorization_user(generate_name, generate_email, generate_password):
     WebDriverWait(driver, 3).until(expected_conditions.element_to_be_clickable((LoginPageLocators.LOGIN_BUTTON)))
     driver.quit()
     return user
+
+@pytest.fixture
+def driver():
+    driver = webdriver.Chrome()
+    yield driver
+    driver.quit()
